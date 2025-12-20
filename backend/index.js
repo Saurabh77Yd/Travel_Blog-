@@ -6,7 +6,9 @@ const express = require("express");
 const cors  = require("cors");
 const jwt  = require ("jsonwebtoken");
 
-const User = require("./models/user.model")
+const User = require("./models/user.model");
+const TravelStory = require("./models/travelStory.model");
+const { authenticateToken } = require("./utilities");
 
 mongoose.connect(config.connectionString);
 
@@ -95,6 +97,33 @@ app.post("/login", async(req,res)=>{
         accessToken,
     });
 
+})
+
+//Get User
+app.get("/get-user", authenticateToken, async(req, res)=>{
+    const {userId} = req.user;
+    const isUser = await User.findOne({_id:userId})
+    if(!isUser){
+        return res.sendStatus(401);
+    }
+    return res.json({
+        user: isUser,
+        message:"",
+    });
+});
+
+//Add Travel Story
+app.post("/add-travel-story", authenticateToken, async(req,res)=>{
+    const { title, story, visitedLocation, imageUrl, visitedDate} = req.body;
+    const { userId } = req.user;
+
+    //validate required field
+    if(!title || !story || !visitedLocation || !imageUrl || !visitedDate){
+        return res.status(400).json({
+            error : true,
+            message : "All fields are required"
+        })
+    }
 })
 
 app.listen(8000);

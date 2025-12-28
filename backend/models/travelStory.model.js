@@ -24,7 +24,7 @@ const travelStorySchema = new Schema({
         required : true
     },
     createOn : {
-        type : DataTransfer, 
+        type : Date, 
         default : Date.now
     },
     imageUrl : {

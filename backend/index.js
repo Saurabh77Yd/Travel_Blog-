@@ -116,6 +116,67 @@ app.get("/get-user", authenticateToken, async(req, res)=>{
     });
 });
 
+//Route handle image upload
+app.post("/image-upload", upload.single("image"), async(req,res)=>{
+    try{
+        if(!req.file){
+            return res.status(400).json({
+                error: true,
+                message: "No image uploaded"
+            })
+        }
+        const imageUrl = `http://localhost:8000/uploads/${req.file.filename}`
+        res.status(201).json({ imageUrl })
+    }catch(error){
+        res.status(500).json({
+            error:true,
+            message:error.message
+        })
+    }
+})
+
+//Delete an image from uploads folder
+app.delete("/delete-image", async(req, res)=>{
+    const {imageUrl} = req.query;
+
+    if(!imageUrl){
+        return res.status(400).json({
+            error: true,
+            message:"imageUrl parameter is required"
+        })
+    }
+
+    try{
+        //Extract the file name from the imageUrl
+        const filename = path.basename(imageUrl);
+        //Define the file path
+        const filePath = path.join(__dirname, 'uploads', filename);
+
+        //check if file exists
+        if(fs.existsSync(filePath)){
+            //Delete the file from the uploads folder
+            fs.unlinkSync(filePath);
+            res.status(200).json({
+                message:"Image delete succefully"
+            })
+        }else{
+            res.status(500).json({
+                error: true,
+                message: error.message
+            })
+        }
+    }catch(error){
+        res.status(500).json({
+            error:true,
+            message:error.message
+        })
+    }
+})
+
+//Serve static file from the uploads and assets directory
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+app.use("/assets", express.static(path.join(__dirname, "assets")));
+
 //Add Travel Story
 app.post("/add-travel-story", authenticateToken, async(req,res)=>{
     const { title, story, visitedLocation, imageUrl, visitedDate} = req.body;
@@ -172,67 +233,59 @@ app.get("/get-all-stories", authenticateToken, async(req, res)=>{
 
 })
 
-//Route handle image upload
-app.post("/image-upload", upload.single("image"), async(req,res)=>{
-    try{
-        if(!req.file){
-            return res.status(400).json({
-                error: true,
-                message: "No image uploaded"
-            })
-        }
-        const imageUrl = `http://localhost:8000/uploads/${req.file.filename}`
-        res.status(201).json({ imageUrl })
-    }catch(error){
-        res.status(500).json({
-            error:true,
-            message:error.message
-        })
-    }
-})
+//Edit travell story
+app.post("/edit-story/:id", authenticateToken, async(req, res)=>{
+    const {id} = req.params;
+    const {title, story, visitedLocation, imageUrl, visitedDate } = req.body;
+    const {userId} = req.user;
 
-//Delete an image from uploads folder
-app.delete("/delete-image", async(req, res)=>{
-    const {imageUrl} = req.query;
-
-    if(!imageUrl){
+     //validate required field
+    if(!title || !story || !visitedLocation || !imageUrl || !visitedDate){
         return res.status(400).json({
-            error: true,
-            message:"imageUrl parameter is required"
+            error : true,
+            message : "All fields are required"
         })
     }
+    // Convert valit date from millisecond to date object
+    const parsedVisitedDate = new Date(parseInt(visitedDate));
 
     try{
-        //Extract the file name from the imageUrl
-        const filename = path.basename(imageUrl);
-        //Define the file path
-        const filePath = path.join(__dirname, 'uplods', filename);
-
-        //check if file exists
-        if(fs.existsSync(filePath)){
-            //Delete the file from the uploads folder
-            fs.unlinkSync(filePath);
-            res.status(200).json({
-                message:"Image delete succefully"
-            })
-        }else{
-            res.status(500).json({
+        //Find the travel story by ID and ensure it belong to the authenticated user
+        const travelStory = await TravelStory.findOne({_id:id, userId: userId});
+        if(!travelStory){
+            return res.status(404).json({
                 error: true,
-                message: error.message
+                message:"Travel story not found"
             })
         }
+        const placeholderImgUrl = `http://localhost:8000/assets/placholder.png`
+        travelStory.title = title;
+        travelStory.story = story;
+        travelStory.visitedLocation = visitedLocation;
+        travelStory.imageUrl = imageUrl || placeholderImgUrl;
+        travelStory.visitedDate = visitedDate;
+
+        await travelStory.save();
+        res.status(200).json({
+            story:travelStory,
+            message:'Update successful'
+        })
     }catch(error){
         res.status(500).json({
             error:true,
-            message:error.message
+            message: error.message
         })
     }
 })
 
-//Serve static file from the uploads and assets directory
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-app.use("/assets", express.static(path.join(__dirname, "assets")));
+//Delete travel story
+app.delete("/delete-story/:id", authenticateToken, async(req, res)=>{
+    const {id} = req.params;
+    const {userId} = req.user;
+    
+})
 
-
-app.listen(8000);
+app.listen(8000,  () => {
+  console.log(`Server running on port 8000`);
+});
 module.exports = app;

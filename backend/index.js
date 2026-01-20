@@ -234,7 +234,7 @@ app.get("/get-all-stories", authenticateToken, async(req, res)=>{
 })
 
 //Edit travell story
-app.post("/edit-story/:id", authenticateToken, async(req, res)=>{
+app.put("/edit-story/:id", authenticateToken, async(req, res)=>{
     const {id} = req.params;
     const {title, story, visitedLocation, imageUrl, visitedDate } = req.body;
     const {userId} = req.user;
@@ -282,7 +282,81 @@ app.post("/edit-story/:id", authenticateToken, async(req, res)=>{
 app.delete("/delete-story/:id", authenticateToken, async(req, res)=>{
     const {id} = req.params;
     const {userId} = req.user;
-    
+    try{
+        //Find the travel story by Id and ensure it belong authenticted user
+        const travelStory = await TravelStory.findOne({_id:id, userId:userId});
+        if(!travelStory){
+            return res.status(404).json({
+                error: true,
+                message:"Trvel story not found"
+            });
+        }
+        //Delete the travel story from database
+        await travelStory.deleteOne({_id:id, userId:userId});
+        //Extract the file from image Url
+        const imageUrl = travelStory.imageUrl
+        const filename = path.basename(imageUrl);
+
+        //Define file path
+        const filePath = path.join(__dirname, 'uploads', filename);
+
+        //Delete the image file from the uploads folder
+        fs.unlink(filePath,(err)=>{
+            if(err){
+                console.error("Failed to delete image file:", err);
+            }
+        });
+
+        res.status(200).json({
+            message:"Travel story delete succesfully"
+        });
+    }catch(error){
+        res.status(500).json({
+            error:true,
+            message:error.message
+        });
+    }   
+
+})
+
+//Update is favourite 
+app.put("/update-is-favourite/:id",authenticateToken, async(req,res)=>{
+    const {id} = req.params;
+    const {isFavourite} = req.body;
+    const {userId} = req.user;
+
+    try{
+        const travelStory = await TravelStory.findOne({_id:id, userId:userId});
+        if(!travelStory){
+            return res.status(404).json({
+                error:true,
+                message:"Trvel story not found"
+            })
+        }
+        travelStory.isFavourite = isFavourite;
+
+        await travelStory.save();
+        res.status(200).json({
+            story:travelStory,
+            message:"update Successfuly"
+        })
+    }catch(error){
+        res.status(500).json({error:true, message:error.message});
+    }
+
+})
+
+//Search travel stories
+app.get("/search", authenticateToken, async(req,res)=>{
+    const {query} = req.query;
+    const {userId} = req.user;
+
+    if(!query){
+        return res.status(404).json({
+            error:true,
+            message:"query is required"
+        });
+    }
 })
 
 app.listen(8000,  () => {

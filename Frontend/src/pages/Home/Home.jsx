@@ -3,8 +3,10 @@ import Navbar from "../../components/Navbar";
 import {useNavigate} from "react-router-dom"; 
 import axiosInstance from "../../utils/axiosInstance";
 import TravelStoryCard from "../../components/Cards/TravelStoryCard";
-const Home = () => {
+import {ToastContainer, toast} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
+const Home = () => {
   const navigate = useNavigate()
   const [userInfo, setUserInfo] = useState(null);
   const [allStories, setAllStorage] = useState([])
@@ -49,7 +51,19 @@ const Home = () => {
 
   }
   //Handle update Favourite
-  const updateIsFavourite = (storyData)=>{
+  const updateIsFavourite = async(storyData)=>{
+    const storyId = storyData._id;
+    try{
+      const response = await axiosInstance.put("/update-is-favourite/"+storyId,{
+        isFavourite: !storyData.isFavourite,
+      })
+      if(response.data && response.data.story){
+        toast.success("Story update succefully");
+        getAllTravelStories();
+      }
+    }catch(error){
+      console.log("An unexpected error occurred. Please try again", error);
+    }
 
   }
 
@@ -63,8 +77,7 @@ const Home = () => {
   },[])
 
   return (
-    <div>
-      <>
+    <>
       <Navbar userInfo={userInfo} />
       <div className="container mx-auto py-10">
         <div className="flex gap-7">
@@ -97,9 +110,10 @@ const Home = () => {
           
         </div>
       </div>
+
+      <ToastContainer/>
     
-      </>
-    </div>
+    </>
   )
 }
 

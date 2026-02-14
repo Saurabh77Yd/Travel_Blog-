@@ -5,11 +5,18 @@ import axiosInstance from "../../utils/axiosInstance";
 import TravelStoryCard from "../../components/Cards/TravelStoryCard";
 import {ToastContainer, toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Modal from "react-modal";
+import {MdAdd} from "react-icons/md";
+import AddEditTravelStory from "./AddEditTravelStory";
 
 const Home = () => {
   const navigate = useNavigate()
   const [userInfo, setUserInfo] = useState(null);
-  const [allStories, setAllStorage] = useState([])
+  const [allStories, setAllStorage] = useState([]);
+  const [openAddEditModel, setOpenAddEditModel] = useState({isShown :false,
+    type: "add",
+    data:null,
+  })
 
   //Get user Info 
   const getUserInfo = async () =>{
@@ -110,6 +117,24 @@ const Home = () => {
           
         </div>
       </div>
+      {/* Add & Edit Travel Stroy Modal */}
+      <Modal isOpen={openAddEditModel.isShown} onRequestClose={()=>{}} style={{
+        overlay:{
+          backgroundColor:"rgba(0,0,0,0.2)",
+          zIndex:999
+        },
+      }}
+      appElement={document.getElementById("root")}
+      className="model-box"> <AddEditTravelStory type={openAddEditModel.type} storyInfo={ openAddEditModel.data} onClose={()=>{
+        setOpenAddEditModel({isShown:false, type:"add" , data:null})
+      }}
+      getAllTravelStories={getAllTravelStories}/></Modal>
+      <button className="w-16 h-16 flex items-center justify-center rounded-full bg-primary hover:bg-cyan-400 fixed right-10 bottom-10" onClick={()=>{
+        setOpenAddEditModel({isShown:true, type:"add", data:null});
+      }}>
+        <MdAdd className="text-[32px] text-white"/>
+
+      </button>
 
       <ToastContainer/>
     

@@ -1,4 +1,7 @@
 import {MdAdd, MdDeleteOutline, MdUpdate, MdClose} from "react-icons/md";
+import DateSelector from "../../components/Input/DateSelector";
+import ImageSelector from "../../components/Input/ImageSelector";
+import { useState } from "react";
 
 const AddEditTravelStory = ({
     stroyInfo,
@@ -6,9 +9,14 @@ const AddEditTravelStory = ({
     onClose,
     getAllTravelStories
 }) => {
-    const handleAddOrUpdateClick = ()=>{
 
-    }
+  const [title, setTitle] = useState("");
+  const [storyImg, setStoryImg] = useState(null);
+  const [story, setStory] = useState("");
+  const [visitedLocation, setVisitedLocation] = useState([]);
+  const [visitedDate, setVisitedDate] = useState(null);
+
+  const handleAddOrUpdateClick = ()=>{}
   return (
     <div>
       <div className="flex items-center justify-between">
@@ -36,10 +44,22 @@ const AddEditTravelStory = ({
             type="text"
             className="text-2xl text-slate-950 outline-none"
             placeholder="A Day at the Great Wall"
+            value={title}
+            onChange={({target})=>setTitle(target.value)}
         /> 
-
-          
+        <div className="my-3">
+          <DateSelector date={visitedDate} setDate={setVisitedDate}/>
         </div>
+
+        <ImageSelector image={storyImg} setImage={setStoryImg}/>
+
+
+
+        <div className="flex flex-col gap-2 mt-4">
+          <label className="input-label">STORY</label>
+          <textarea type="text" className="text-sm text-slate-950 outline-none bg-slate-50 p-2 rounded" placeholder="Your Story" rows={10} value={story} onChange={({target})=>setStory(target.value)}></textarea>
+        </div> 
+      </div>
       </div>
     </div>
   )

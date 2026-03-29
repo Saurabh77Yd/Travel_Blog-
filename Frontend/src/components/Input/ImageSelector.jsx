@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { FaRegFileImage } from 'react-icons/fa';
 import { MdDeleteOutline } from 'react-icons/md';
 
-const ImageSelector = ({image, setImage}) => {
+const ImageSelector = ({image, setImage, handleDeleteImg}) => {
 
   const inputRef = useRef(null);
   const [previewUrl, setPreviewUrl] = useState(null);
@@ -18,7 +18,10 @@ const ImageSelector = ({image, setImage}) => {
     inputRef.current.click();
   };
 
-  const handleRemoveImage = ()=>{}
+  const handleRemoveImage = ()=>{
+    setImage(null);
+    handleDeleteImg()
+  }
 
   useEffect(()=>{
     let objectUrl = null;

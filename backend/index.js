@@ -240,7 +240,7 @@ app.put("/edit-story/:id", authenticateToken, async(req, res)=>{
     const {userId} = req.user;
 
      //validate required field
-    if(!title || !story || !visitedLocation || !imageUrl || !visitedDate){
+    if(!title || !story || !visitedLocation || !visitedDate){
         return res.status(400).json({
             error : true,
             message : "All fields are required"

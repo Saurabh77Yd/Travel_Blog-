@@ -1,0 +1,43 @@
+<svg width="320" height="220" viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg">
+  
+  <!-- Gradients -->
+  <defs>
+    <radialGradient id="bgGlow" cx="50%" cy="50%" r="70%">
+      <stop offset="0%" stop-color="#ecfeff"/>
+      <stop offset="100%" stop-color="#ffffff"/>
+    </radialGradient>
+
+    <linearGradient id="cardGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#ecfeff"/>
+    </linearGradient>
+
+    <linearGradient id="accentGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#05B6D3"/>
+      <stop offset="100%" stop-color="#67e8f9"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="320" height="220" fill="url(#bgGlow)" />
+
+  <!-- Main Card -->
+  <rect x="60" y="40" width="200" height="130" rx="16" fill="url(#cardGrad)" stroke="#cffafe"/>
+
+  <!-- Main Icon Circle -->
+  <circle cx="160" cy="85" r="24" fill="url(#accentGrad)" opacity="0.15"/>
+  <circle cx="160" cy="85" r="12" fill="#05B6D3"/>
+
+  <!-- Placeholder Lines -->
+  <rect x="95" y="120" width="130" height="10" rx="5" fill="#a5f3fc"/>
+  <rect x="110" y="138" width="100" height="8" rx="4" fill="#cffafe"/>
+
+  <!-- Floating Decorative Elements -->
+  <circle cx="90" cy="60" r="5" fill="#05B6D3" opacity="0.4"/>
+  <circle cx="230" cy="65" r="6" fill="#22d3ee" opacity="0.5"/>
+  <circle cx="250" cy="120" r="4" fill="#67e8f9" opacity="0.6"/>
+
+  <!-- Shadow -->
+  <ellipse cx="160" cy="175" rx="70" ry="10" fill="#000" opacity="0.05"/>
+
+</svg>

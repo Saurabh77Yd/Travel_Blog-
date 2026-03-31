@@ -7,22 +7,30 @@ import {ToastContainer, toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Modal from "react-modal";
 import {MdAdd} from "react-icons/md";
+import EmptyCard from "../../components/Cards/EmptyCard";
 import AddEditTravelStory from "./AddEditTravelStory";
 import ViewTravelStory from "./ViewTravelStory";
+import { DayPicker } from "react-day-picker";
+import moment from "moment";
+import FilterInfoTitle from "../../components/Cards/FilterInfoTitle";
+import { getEmptyCardMessage } from "../../utils/helper";
+import { getEmptyCardImg } from "../../utils/helper";
 
 const Home = () => {
   const navigate = useNavigate()
   const [userInfo, setUserInfo] = useState(null);
-  const [allStories, setAllStorage] = useState([]);
+  const [allStories, setAllStories] = useState([]);
+  const [filterType, setFilterType] = useState('');
+  const [dateRange, setDateRange] = useState({from:null, to:null})
   const [openAddEditModel, setOpenAddEditModel] = useState({isShown :false,
     type: "add",
     data:null,
   })
-
   const [openViewModal, setOpenViewModal] = useState({
     isShown:false,
     data:null,
   });
+  const [searchQuery, setSearchQuery] = useState('');
 
   //Get user Info 
   const getUserInfo = async () =>{
@@ -47,7 +55,7 @@ const Home = () => {
     try{
       const response = await axiosInstance.get("/get-all-stories");
       if(response.data && response.data.stories){
-        setAllStorage(response.data.stories);
+        setAllStories(response.data.stories);
       }
 
     }catch(error){
@@ -72,7 +80,13 @@ const Home = () => {
       })
       if(response.data && response.data.story){
         toast.success("Story update succefully");
-        getAllTravelStories();
+        if(filterType === "search" && searchQuery){
+          onSearchStory(searchQuery);
+        }else if(filterType === "date"){
+          filterStoriesByDate(dateRange)
+        }else{
+          getAllTravelStories();
+        }
       }
     }catch(error){
       console.log("An unexpected error occurred. Please try again", error);
@@ -94,6 +108,60 @@ const Home = () => {
       console.log("An unexpected error occurred. Please try again", error);
     }
   }
+  //Search Story
+  const onSearchStory = async(query)=>{
+    try{
+      const response = await axiosInstance.get("/search",{
+        params:{
+          query,
+        }
+      });
+
+      if(response.data && response.data.stories){
+        setFilterType("search");
+        setAllStories(response.data.stories);
+      }
+      
+    }catch(error){
+      console.log("An unexpected error occurred. Please try again", error);
+    }
+  }
+
+  const handleClearSearch = async()=>{
+    setFilterType("");
+    getAllTravelStories();
+  }
+  //Handle Filter Travel Story By Date Range
+  const filterStoriesByDate = async(day)=>{
+    try{
+      const startDate = day.from ? moment(day.from).valueOf() : null;
+      const endDate = day.to ? moment(day.to).valueOf():null;
+      
+      if(startDate && endDate){
+        const response = await axiosInstance.get("/travel-stories/filter",{
+          params:{startDate, endDate},
+        });
+
+        if(response.data && response.data.stories){
+          setFilterType("date");
+          setAllStories(response.data.stories);
+        }
+      }
+    }catch(error){
+      console.log("An unexpected error occurred. Please try again.", error);
+    }
+  }
+  // Handle date range
+  const handleDayClick = (day)=>{
+    setDateRange(day);
+    filterStoriesByDate(day);
+  }
+
+  const resetFilter = ()=>{
+    setDateRange({from:null, to:null});
+    setFilterType("");
+    getAllTravelStories();
+  }
 
   useEffect(()=>{
     getUserInfo();
@@ -105,8 +173,21 @@ const Home = () => {
 
   return (
     <>
-      <Navbar userInfo={userInfo} />
+      <Navbar 
+        userInfo={userInfo} 
+        searchQuery={searchQuery} 
+        setSearchQuery={setSearchQuery}
+        onSearchNote={onSearchStory}
+        handleClearSearch={handleClearSearch} 
+      />
       <div className="container mx-auto py-10">
+        <FilterInfoTitle 
+          filterType={filterType}
+          filterDates={dateRange}
+          onClear={()=>{
+            resetFilter();
+          }} 
+        />
         <div className="flex gap-7">
           <div className="flex-1">
             {allStories.length>0 ? (
@@ -130,10 +211,24 @@ const Home = () => {
                 })}
               </div>
             ):(
-              <EmptyCard />
+              <EmptyCard 
+                imgSrc={getEmptyCardImg(filterType)}
+                message={getEmptyCardMessage(filterType)} 
+              />
             )}
           </div>
-          <div className="w-[320px]"></div>
+          <div className="w-[350px]">
+            <div className="bg-white border border-slate-200 shadow-lg shadow-slate-200/60 rounded-lg">
+              <div className="p-3">
+                <DayPicker captionLayout="dropdown-buttons"
+                  mode="range"
+                  selected={dateRange} 
+                  onSelect={handleDayClick}
+                  pagedNavigation
+                />
+              </div>
+            </div>
+          </div>
           
         </div>
       </div>

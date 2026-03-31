@@ -1,0 +1,44 @@
+<svg width="420" height="300" viewBox="0 0 420 300" xmlns="http://www.w3.org/2000/svg">
+
+  <!-- Gradients -->
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="50%" r="70%">
+      <stop offset="0%" stop-color="#ecfeff"/>
+      <stop offset="100%" stop-color="#ffffff"/>
+    </radialGradient>
+
+    <linearGradient id="glass" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#05B6D3"/>
+      <stop offset="100%" stop-color="#67e8f9"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="420" height="300" fill="url(#bg)" />
+
+  <!-- Big Search Circle -->
+  <circle cx="180" cy="140" r="70" fill="#05B6D3" opacity="0.08"/>
+
+  <!-- Magnifying Glass -->
+  <circle cx="180" cy="140" r="40" fill="none" stroke="#05B6D3" stroke-width="6"/>
+  <line x1="210" y1="170" x2="250" y2="210" stroke="#05B6D3" stroke-width="6" stroke-linecap="round"/>
+
+  <!-- Inner Empty State -->
+  <circle cx="180" cy="140" r="10" fill="#05B6D3" opacity="0.4"/>
+
+  <!-- Decorative Floating Shapes -->
+  <circle cx="90" cy="70" r="6" fill="#22d3ee" opacity="0.6"/>
+  <circle cx="330" cy="80" r="8" fill="#67e8f9" opacity="0.6"/>
+  <circle cx="350" cy="200" r="5" fill="#05B6D3" opacity="0.5"/>
+
+  <!-- Small Cards (faded results) -->
+  <rect x="270" y="120" width="70" height="12" rx="6" fill="#cffafe"/>
+  <rect x="270" y="140" width="50" height="10" rx="5" fill="#e0f2fe"/>
+
+  <rect x="60" y="200" width="80" height="12" rx="6" fill="#cffafe"/>
+  <rect x="60" y="220" width="60" height="10" rx="5" fill="#e0f2fe"/>
+
+  <!-- Shadow -->
+  <ellipse cx="210" cy="260" rx="100" ry="12" fill="#000" opacity="0.05"/>
+
+</svg>

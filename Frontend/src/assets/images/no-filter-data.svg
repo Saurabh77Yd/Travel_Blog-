@@ -1,0 +1,44 @@
+<svg width="420" height="300" viewBox="0 0 420 300" xmlns="http://www.w3.org/2000/svg">
+
+  <!-- Gradients -->
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="50%" r="70%">
+      <stop offset="0%" stop-color="#ecfeff"/>
+      <stop offset="100%" stop-color="#ffffff"/>
+    </radialGradient>
+
+    <linearGradient id="filterGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#05B6D3"/>
+      <stop offset="100%" stop-color="#67e8f9"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="420" height="300" fill="url(#bg)" />
+
+  <!-- Big Soft Circle -->
+  <circle cx="200" cy="140" r="75" fill="#05B6D3" opacity="0.08"/>
+
+  <!-- Funnel (Filter Icon) -->
+  <path d="M150 100 H250 L210 150 V190 L190 200 V150 Z" 
+        fill="none" stroke="#05B6D3" stroke-width="6" stroke-linejoin="round"/>
+
+  <!-- Inner Highlight -->
+  <circle cx="200" cy="135" r="10" fill="#05B6D3" opacity="0.4"/>
+
+  <!-- Disabled / Empty Lines -->
+  <rect x="280" y="110" width="70" height="10" rx="5" fill="#cffafe"/>
+  <rect x="280" y="130" width="50" height="8" rx="4" fill="#e0f2fe"/>
+
+  <rect x="70" y="200" width="80" height="10" rx="5" fill="#cffafe"/>
+  <rect x="70" y="220" width="60" height="8" rx="4" fill="#e0f2fe"/>
+
+  <!-- Floating Decorative Elements -->
+  <circle cx="90" cy="70" r="6" fill="#22d3ee" opacity="0.6"/>
+  <circle cx="340" cy="80" r="7" fill="#67e8f9" opacity="0.6"/>
+  <circle cx="360" cy="210" r="5" fill="#05B6D3" opacity="0.5"/>
+
+  <!-- Shadow -->
+  <ellipse cx="210" cy="260" rx="100" ry="12" fill="#000" opacity="0.05"/>
+
+</svg>

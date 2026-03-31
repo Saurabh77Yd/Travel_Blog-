@@ -259,7 +259,8 @@ app.put("/edit-story/:id", authenticateToken, async(req, res)=>{
                 message:"Travel story not found"
             })
         }
-        const placeholderImgUrl = `http://localhost:8000/assets/placholder.png`
+        //const placeholderImgUrl = `http://localhost:8000/assets/placholder.png`
+        const placeholderImgUrl = `https://travel-stroy-backend.onrender.com/assets/placholder.png`
         travelStory.title = title;
         travelStory.story = story;
         travelStory.visitedLocation = visitedLocation;
